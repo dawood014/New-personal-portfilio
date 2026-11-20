@@ -1,0 +1,34 @@
+<?php
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PublicController;
+use App\Http\Controllers\AdminController;
+Route::get('/',[PublicController::class,'index'])->name('home');
+Route::get('/projects/{item}',[PublicController::class,'project'])->name('project.show');
+Route::post('/contact',[PublicController::class,'contact'])->middleware('throttle:5,1')->name('contact.submit');
+Route::get('/admin/register',[\App\Http\Controllers\AdminSetupController::class,'show'])->name('admin.register');
+Route::post('/admin/register',[\App\Http\Controllers\AdminSetupController::class,'store'])->middleware('throttle:3,1')->name('admin.register.store');
+Route::get('/admin/forgot-password',[\App\Http\Controllers\AdminSetupController::class,'forgot'])->name('password.request');
+Route::post('/admin/forgot-password',[\App\Http\Controllers\AdminSetupController::class,'sendReset'])->middleware('throttle:3,1')->name('password.email');
+Route::get('/admin/reset-password/{token}',[\App\Http\Controllers\AdminSetupController::class,'resetForm'])->name('password.reset');
+Route::post('/admin/reset-password',[\App\Http\Controllers\AdminSetupController::class,'reset'])->middleware('throttle:5,1')->name('password.update');
+Route::get('/admin/dashboard',fn()=>redirect()->route('admin.dashboard'))->middleware('auth');
+Route::get('/admin/login',[AdminController::class,'loginForm'])->name('login');
+Route::post('/admin/login',[AdminController::class,'login'])->middleware('throttle:5,1')->name('admin.login');
+Route::post('/admin/logout',[AdminController::class,'logout'])->middleware('auth')->name('admin.logout');
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function(){
+ Route::get('/',[AdminController::class,'dashboard'])->name('dashboard');
+ Route::get('/content/{section}',[AdminController::class,'editContent'])->name('content');
+ Route::post('/content/{section}',[AdminController::class,'saveContent'])->name('content.save');
+ Route::get('/items/{type}',[AdminController::class,'items'])->name('items');
+ Route::get('/items/{type}/create',[AdminController::class,'itemForm'])->name('items.create');
+ Route::get('/items/{type}/{item}/edit',[AdminController::class,'itemForm'])->name('items.edit');
+ Route::post('/items/{type}',[AdminController::class,'saveItem'])->name('items.store');
+ Route::put('/items/{type}/{item}',[AdminController::class,'saveItem'])->name('items.update');
+ Route::delete('/items/{type}/{item}',[AdminController::class,'deleteItem'])->name('items.delete');
+ Route::delete('/items/{type}/{item}/images/{image}',[AdminController::class,'deleteProjectImage'])->name('items.images.delete');
+ Route::get('/messages',[AdminController::class,'messages'])->name('messages');
+ Route::post('/messages/{message}/read',[AdminController::class,'readMessage'])->name('messages.read');
+ Route::delete('/messages/{message}',[AdminController::class,'deleteMessage'])->name('messages.delete');
+ Route::get('/account',[AdminController::class,'account'])->name('account');
+ Route::post('/account',[AdminController::class,'saveAccount'])->name('account.save');
+});

@@ -1,0 +1,3 @@
+@extends('layouts.admin') @section('body')<h1 class="h2 mb-4">Dashboard</h1><div class="row g-3">@foreach(['project'=>'Projects','skill'=>'Skills','service'=>'Services','testimonial'=>'Testimonials'] as $type=>$label)<div class="col-md-3"><div class="card p-4"><div class="text-muted">{{ $label }}</div><h2>{{ $counts[$type]??0 }}</h2></div></div>@endforeach
+</div><div class="card p-4 mt-4"><h4>Unread messages: {{ $unread }}</h4><h5 class="mt-4">Recent messages</h5>@forelse($recent as $message)<p><strong>{{ $message->name }}</strong> — {{ $message->subject }} <span class="text-muted">{{ $message->created_at->diffForHumans() }}</span></p>@empty<p>No messages yet.</p>@endforelse
+<a href="{{ route('admin.messages') }}">Manage messages</a></div>@endsection
