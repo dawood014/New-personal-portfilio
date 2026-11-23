@@ -1,5 +1,33 @@
-@extends('layouts.site') @section('title',$item->title) @section('body')<main class="section"><div class="container"><a href="{{ route('home') }}#projects">← All projects</a><h1 class="display-5 mt-4">{{ $item->title }}</h1><p class="eyebrow">{{ $item->subtitle }}</p>@if($item->image)<img class="img-fluid rounded-4 my-4" style="max-height:480px" src="{{ asset('storage/'.$item->image) }}" alt="{{ $item->title }}">@endif
-@if($item->images->count())<div class="row g-3 my-3">@foreach($item->images as $image)<div class="col-md-4"><a href="{{ asset('storage/'.$image->path) }}" target="_blank" rel="noopener"><img class="img-fluid rounded-3" loading="lazy" src="{{ asset('storage/'.$image->path) }}" alt="{{ $item->title }} screenshot"></a></div>@endforeach
-</div>@endif
-<p class="lead muted" style="white-space:pre-line">{{ $item->description }}</p><p class="muted">{{ $item->meta }}</p><div class="d-flex gap-3">@if($item->url)<a class="btn btn-accent" target="_blank" rel="noopener noreferrer" href="{{ $item->url }}">Live site</a>@endif @if($item->secondary_url)<a class="btn btn-outline-light" target="_blank" rel="noopener noreferrer" href="{{ $item->secondary_url }}">Source code</a>@endif
-</div></div></main>@endsection
+@extends('layouts.site')
+@section('title',$item->title)
+@section('body')
+<main class="section-space project-detail-page">
+    <div class="container">
+        <a class="project-back" href="{{ route('home') }}#projects">← All projects</a>
+        <header class="project-detail-header reveal">
+            @if($item->subtitle)<span class="project-category">{{ $item->subtitle }}</span>@endif
+            <h1>{{ $item->title }}</h1>
+        </header>
+        @if($item->image)
+            <img class="project-detail-main reveal" src="{{ asset('storage/'.$item->image) }}" alt="{{ $item->title }}" loading="lazy">
+        @endif
+        @if($item->images->count())
+            <div class="row g-3 my-4">
+                @foreach($item->images as $image)
+                    <div class="col-md-4">
+                        <a href="{{ asset('storage/'.$image->path) }}" target="_blank" rel="noopener">
+                            <img class="project-detail-gallery" loading="lazy" src="{{ asset('storage/'.$image->path) }}" alt="{{ $item->title }} screenshot">
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+        @if($item->description)<p class="project-detail-copy">{{ $item->description }}</p>@endif
+        @if($item->meta)<p class="project-detail-meta"><strong>Technologies:</strong> {{ $item->meta }}</p>@endif
+        <div class="hero-actions">
+            @if($item->url)<a class="btn btn-gold" target="_blank" rel="noopener noreferrer" href="{{ $item->url }}">Live Demo</a>@endif
+            @if($item->secondary_url)<a class="btn btn-outline-gold" target="_blank" rel="noopener noreferrer" href="{{ $item->secondary_url }}">GitHub Repository</a>@endif
+        </div>
+    </div>
+</main>
+@endsection
